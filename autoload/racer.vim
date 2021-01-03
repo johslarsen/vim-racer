@@ -197,7 +197,7 @@ function! s:RacerGetCompletions(base)
     return out
 endfunction
 
-function! racer#GoToDefinition()
+function! racer#GoToDefinition(preview=0)
     if s:ErrorCheck()
         return
     endif
@@ -232,7 +232,11 @@ function! racer#GoToDefinition()
                 let stack.curidx = len(stack.items)
                 call settagstack(win_getid(), stack)
             endif
-            call s:RacerJumpToLocation(fname, linenum, colnum)
+            if (a:preview == 1)
+              exec 'pedit +'.linenum.' '.fnameescape(fname)
+            else
+              call s:RacerJumpToLocation(fname, linenum, colnum)
+            endif
             if dotag
                 let curidx = gettagstack().curidx + 1
                 call settagstack(win_getid(), {'curidx': curidx})
